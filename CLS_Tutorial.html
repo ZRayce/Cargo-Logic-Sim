@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargo Logic Sim - Tutorial</title>
+    <link rel="icon" type="image/png" href="assets/images/LOGO_CLS.png">
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="assets/css/CLS_Tutorial.css">
+</head>
+<body>
+
+    <!-- Audio Elements -->
+    <audio id="hoverSound" src="assets/sounds/hover.wav" preload="auto"></audio>
+    <audio id="clickSound" src="assets/sounds/select.wav" preload="auto"></audio>
+    <audio id="notifySound" src="assets/sounds/notification.wav" preload="auto"></audio>
+    <audio id="successSound" src="assets/sounds/successful.wav" preload="auto"></audio>
+    <audio id="errorSound" src="assets/sounds/error.wav" preload="auto"></audio>
+
+    <div class="game-ui">
+        <!-- Top Navigation Bar -->
+        <div class="top-nav">
+            <a href="CLS_GameMenu.html?skipLoad=true" class="icon-btn interactable" id="backMenuBtn" title="Back to Menu">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="tutorial-title-bar">
+                <i class="fas fa-book-open"></i> TUTORIAL
+            </div>
+        </div>
+
+        <!-- Main Tutorial Workspace -->
+        <div class="tutorial-container">
+            
+            <!-- Left Sidebar: Lesson List -->
+            <div class="tutorial-sidebar">
+                <div class="lesson-card active interactable" data-lesson="1">
+                    <div class="lesson-icon"><i class="fas fa-arrows-alt"></i></div>
+                    <div class="lesson-info">
+                        <span class="lesson-num">01 MOVEMENT</span>
+                        <p>Learn how to move your bot around.</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card locked interactable" data-lesson="2">
+                    <div class="lesson-icon"><i class="fas fa-cube"></i></div>
+                    <div class="lesson-info">
+                        <span class="lesson-num">02 PICKUP & DROP</span>
+                        <p>Pick up crates and drop them.</p>
+                    </div>
+                    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                </div>
+
+                <div class="lesson-card locked interactable" data-lesson="3">
+                    <div class="lesson-icon"><i class="fas fa-code-branch"></i></div>
+                    <div class="lesson-info">
+                        <span class="lesson-num">03 CONDITIONS</span>
+                        <p>Use if/else to make decisions.</p>
+                    </div>
+                    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                </div>
+
+                <div class="lesson-card locked interactable" data-lesson="4">
+                    <div class="lesson-icon"><i class="fas fa-redo"></i></div>
+                    <div class="lesson-info">
+                        <span class="lesson-num">04 LOOPS</span>
+                        <p>Repeat commands efficiently.</p>
+                    </div>
+                    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                </div>
+
+                <div class="lesson-card locked interactable" data-lesson="5">
+                    <div class="lesson-icon"><i class="fas fa-calculator"></i></div>
+                    <div class="lesson-info">
+                        <span class="lesson-num">05 VARIABLES</span>
+                        <p>Store and use data with variables.</p>
+                    </div>
+                    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                </div>
+
+                <div class="lesson-card locked interactable" data-lesson="6">
+                    <div class="lesson-icon"><i class="fas fa-file-code"></i></div>
+                    <div class="lesson-info">
+                        <span class="lesson-num">06 FUNCTIONS</span>
+                        <p>Create reusable functions.</p>
+                    </div>
+                    <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                </div>
+            </div>
+
+            <!-- Right Main Panel: Lesson Viewer -->
+            <div class="tutorial-main-panel">
+                
+                <!-- Lesson Header Info -->
+                <div class="lesson-header">
+                    <h2 id="lessonTitle">LESSON 1: MOVEMENT</h2>
+                    <p id="lessonDesc">Use the move() command to move your bot.</p>
+                </div>
+
+                <!-- Simulation Visual Screen -->
+                <div class="sim-screen">
+                    <div class="grid-overlay"></div>
+                    <!-- Simulated Game Grid Elements -->
+                    <div class="sim-bot"><i class="fas fa-robot"></i><div class="bot-antenna"></div></div>
+                    <div class="sim-crate"><i class="fas fa-box"></i></div>
+                    <div class="sim-target-zone"></div>
+                    <div class="sim-door"></div>
+                    <div class="sim-conveyor"></div>
+                </div>
+
+                <!-- Bottom Split Panel (Code Input & Objectives) -->
+                <div class="lesson-bottom-split">
+                    <div class="panel-box code-panel">
+                        <span class="box-label">WRITE CODE:</span>
+                        <textarea class="code-input" id="playerCodeInput" placeholder="Type commands here..."></textarea>
+                    </div>
+
+                    <div class="panel-box objective-panel">
+                        <span class="box-label">OBJECTIVE:</span>
+                        <div class="objective-content">
+                            <div class="objective-icon-box"><i class="fas fa-vector-square"></i></div>
+                            <p id="objectiveText">Move your bot to the highlighted target zone.</p>
+                        </div>
+                        <button class="start-btn interactable" id="startLessonBtn">START LESSON</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LOCKED MODULE MODAL -->
+    <div class="modal-overlay" id="lockedModal">
+        <div class="modal-box" style="width: 400px; text-align: center;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-lock"></i> Module Locked</h2>
+                <button class="close-btn interactable" data-target="lockedModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content">
+                <p>Complete previous lessons to unlock this module!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERROR MODAL -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal-box error-box" style="width: 420px; text-align: center;">
+            <div class="modal-header" style="border-bottom-color: #ef4444;">
+                <h2 class="modal-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> EXECUTION ERROR</h2>
+                <button class="close-btn interactable" data-target="errorModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content">
+                <p id="errorMessage" style="color: #fca5a5; font-size: 20px; margin-bottom: 10px;">Incorrect command sequence detected.</p>
+                <p style="font-size: 17px; color: #94a3b8;">Review the objective and check your syntax before running again.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL WITH CONFETTI -->
+    <div class="modal-overlay" id="successModal">
+        <div class="confetti-container" id="confettiContainer"></div>
+        <div class="modal-box success-box" style="width: 450px; text-align: center; z-index: 101;">
+            <div class="modal-header" style="border-bottom-color: #10b981;">
+                <h2 class="modal-title" style="color: #10b981;"><i class="fas fa-check-circle"></i> LESSON COMPLETE</h2>
+                <button class="close-btn interactable" data-target="successModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content">
+                <p class="text-highlight" style="font-size: 24px; color: #10b981; margin-bottom: 10px;">EXECUTION SUCCESSFUL!</p>
+                <p>Your logic script compiled and executed with zero errors. Next module unlocked!</p>
+                <button class="start-btn interactable" id="nextLessonBtn" style="position: static; margin-top: 20px; width: 100%;">PROCEED</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="assets/js/CLS_Tutorial.js"></script>
+</body>
+</html>

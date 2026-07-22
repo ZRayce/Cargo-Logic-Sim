@@ -1,0 +1,570 @@
+:root {
+    --bg-color: #0b1016;
+    --panel-bg: #1e2630;
+    --panel-border: #334155;
+    --text-main: #e2e8f0;
+    --highlight-bg: #f59e0b;
+    --highlight-text: #000000;
+    --icon-blue: #38bdf8;
+    --danger-red: #ef4444;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: var(--bg-color);
+    background-image: url('../images/Background-Static_CLS.png'); 
+    background-size: cover;
+    background-position: center;
+    font-family: 'VT323', monospace;
+    color: var(--text-main);
+    user-select: none;
+    overflow: hidden;
+}
+
+.game-ui {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    padding: 4vh 4vw;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top Right Elements */
+.top-right {
+    position: absolute;
+    top: 4vh;
+    right: 4vw;
+    display: flex;
+    gap: 15px;
+    z-index: 10;
+}
+
+.status-panel {
+    background-color: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: 8px;
+    padding: clamp(5px, 1vh, 10px) clamp(10px, 2vw, 20px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(18px, 2.5vh, 24px);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+}
+
+.status-panel .fa-coins { color: var(--highlight-bg); }
+
+.icon-btn {
+    background-color: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: 8px;
+    width: clamp(40px, 6vh, 50px);
+    height: clamp(40px, 6vh, 50px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(16px, 2.5vh, 20px);
+    cursor: pointer;
+    color: var(--text-main);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    transition: 0.2s;
+}
+
+.icon-btn:hover {
+    border-color: var(--highlight-bg);
+    color: var(--highlight-bg);
+}
+
+/* Left Panel */
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: clamp(280px, 25vw, 350px);
+    z-index: 10;
+}
+
+/* Added a subtle drop shadow to make the logo pop off the background */
+.game-logo {
+    width: 100%;
+    max-height: 18vh;
+    object-fit: contain;
+    object-position: left;
+    margin-bottom: 2vh;
+    filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.8)); 
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2vh;
+    flex-grow: 1; 
+    justify-content: center;
+}
+
+.menu-item {
+    background-color: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: 8px;
+    padding: clamp(10px, 1.8vh, 15px) clamp(15px, 2vw, 25px);
+    font-size: clamp(18px, 2.5vh, 26px);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.6), 0 4px 6px rgba(0,0,0,0.3);
+    transition: all 0.1s ease-in-out;
+    text-transform: uppercase;
+}
+
+.menu-item i {
+    width: 25px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.menu-item:hover {
+    border-color: #475569;
+    transform: translateX(5px);
+}
+
+.menu-item.active {
+    background-color: var(--highlight-bg);
+    border-color: #fbbf24;
+    color: var(--highlight-text);
+    box-shadow: inset 0 0 15px rgba(255, 165, 0, 0.4), 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.menu-item.active i { color: var(--highlight-text); }
+.menu-item.exit i { color: var(--danger-red); }
+
+/* Bottom Elements */
+.bottom-left-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 2vh;
+}
+
+.social-icon {
+    background-color: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: 8px;
+    width: clamp(45px, 7vh, 60px);
+    height: clamp(45px, 7vh, 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(20px, 3.5vh, 28px);
+    color: var(--icon-blue);
+    cursor: pointer;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.7), 0 4px 6px rgba(0,0,0,0.4);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.social-icon:hover {
+    border-color: var(--icon-blue);
+    color: #fff;
+    background-color: #2a3749;
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.7), 0 6px 12px rgba(0,0,0,0.6);
+}
+
+.bottom-right-info {
+    position: absolute;
+    bottom: 4vh;
+    right: 4vw;
+    color: var(--icon-blue);
+    font-size: clamp(16px, 2.2vh, 20px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--highlight-bg);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--highlight-bg);
+}
+
+/* =========================================
+   REUSABLE MODAL STYLES
+   ========================================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal-box {
+    background-color: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.9);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    background-color: #151b23;
+    padding: 15px 20px;
+    border-bottom: 2px solid var(--panel-border);
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    margin: 0; font-size: 24px; color: var(--text-main);
+}
+.text-highlight { color: var(--icon-blue); }
+
+.close-btn {
+    background: none; border: none;
+    color: var(--danger-red); font-size: 28px;
+    cursor: pointer; transition: transform 0.1s;
+}
+.close-btn:hover { transform: scale(1.1); }
+
+.modal-content {
+    padding: 25px; font-size: 20px; line-height: 1.5;
+    color: var(--text-main);
+}
+
+/* Settings Form Controls */
+.setting-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed var(--panel-border);
+    padding-bottom: 10px;
+}
+
+input[type=range], select {
+    background-color: #0b1016;
+    border: 1px solid var(--panel-border);
+    color: var(--highlight-bg);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=range] { accent-color: var(--highlight-bg); }
+
+.setting-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 16px;
+}
+.setting-footer a { color: #94a3b8; text-decoration: none; }
+.setting-footer a:hover { color: var(--highlight-bg); }
+
+/* =========================================
+   CUSTOM SLIDER STYLES (Solid Filled Bars)
+   ========================================= */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.slider-container span {
+    width: 45px;
+    text-align: right;
+    font-size: 22px;
+    color: var(--highlight-bg);
+}
+
+/* The Main Bar Container */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none; 
+    width: 200px;
+    height: 24px; /* Makes the bar thicker */
+    background-color: #0b1016; /* Dark empty track */
+    border: 2px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    overflow: hidden; /* This hides the shadow outside the left edge */
+    cursor: pointer;
+}
+
+/* Chrome / Safari / Edge - The Thumb & Fill Effect */
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 8px; /* The leading edge of the bar */
+    height: 24px;
+    background: #fbbf24; /* Slightly brighter yellow for the leading edge */
+    cursor: pointer;
+    /* The magic trick: Casts a massive colored shadow to the left to act as the fill */
+    box-shadow: -205px 0 0 200px var(--highlight-bg); 
+}
+
+/* Firefox - Has built-in progress fill support */
+input[type=range]::-moz-range-progress {
+    background-color: var(--highlight-bg);
+    height: 24px;
+}
+
+input[type=range]::-moz-range-track {
+    background-color: #0b1016;
+    height: 24px;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 8px;
+    height: 24px;
+    background: #fbbf24;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+/* =========================================
+   LOADING SCREEN STYLES
+   ========================================= */
+.boot-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--bg-color); /* Deep industrial black */
+    z-index: 10000; /* Highest priority, above the loading screen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease-out;
+}
+
+.boot-btn {
+    background-color: var(--highlight-bg);
+    color: var(--highlight-text);
+    font-family: 'VT323', monospace;
+    font-size: 36px;
+    padding: 15px 40px;
+    border: 4px solid #fbbf24;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+    transition: all 0.2s;
+    animation: pulse-btn 1.5s infinite;
+}
+
+.boot-btn:hover {
+    background-color: #fbbf24;
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.8);
+}
+
+@keyframes pulse-btn {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 400px;
+    max-width: 80%;
+}
+
+.loading-logo {
+    max-height: 30vh; 
+    width: auto; /* Keeps the proportions correct */
+    max-width: 80%; /* Prevents it from going off the edges of small screens */
+    filter: drop-shadow(0px 5px 15px rgba(245, 158, 11, 0.3));
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.loading-bar-container {
+    width: 100%;
+    height: 24px;
+    background-color: #0b1016;
+    border: 2px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.loading-bar {
+    height: 100%;
+    background-color: var(--highlight-bg); /* Fills with your signature yellow */
+    width: 0%;
+    border-radius: 2px;
+    animation: loadProgress 2.5s ease-in-out forwards;
+}
+
+.loading-text {
+    color: var(--icon-blue);
+    font-size: 24px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.dots {
+    display: inline-block;
+    width: 20px;
+    text-align: left;
+    animation: blink 1.5s infinite;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes loadProgress {
+    0% { width: 0%; }
+    30% { width: 45%; }
+    70% { width: 80%; }
+    100% { width: 100%; }
+}
+
+@keyframes blink {
+    0%, 20% { color: transparent; }
+    40%, 100% { color: var(--icon-blue); }
+}
+
+/* =========================================
+   BOOT SCREEN & LOADING SCREEN STYLES
+   ========================================= */
+.boot-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--bg-color); /* Deep industrial black */
+    z-index: 10000; /* Highest priority, above the loading screen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease-out;
+}
+
+.boot-btn {
+    background-color: var(--highlight-bg);
+    color: var(--highlight-text);
+    font-family: 'VT323', monospace;
+    font-size: 36px;
+    padding: 15px 40px;
+    border: 4px solid #fbbf24;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+    transition: all 0.2s;
+    animation: pulse-btn 1.5s infinite;
+}
+
+.boot-btn:hover {
+    background-color: #fbbf24;
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.8);
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color); /* This gives it the solid background! */
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease-out;
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 400px;
+    max-width: 80%;
+}
+
+.loading-logo {
+    max-height: 30vh; /* Scaled up logo */
+    filter: drop-shadow(0px 5px 15px rgba(245, 158, 11, 0.3));
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.loading-bar-container {
+    width: 100%;
+    height: 24px;
+    background-color: #0b1016;
+    border: 2px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.loading-bar {
+    height: 100%;
+    background-color: var(--highlight-bg); 
+    width: 0%;
+    border-radius: 2px;
+    animation: loadProgress 2.5s ease-in-out forwards;
+}
+
+.loading-text {
+    color: var(--icon-blue);
+    font-size: 24px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.dots {
+    display: inline-block;
+    width: 20px;
+    text-align: left;
+    animation: blink 1.5s infinite;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes pulse-btn {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes loadProgress {
+    0% { width: 0%; }
+    30% { width: 45%; }
+    70% { width: 80%; }
+    100% { width: 100%; }
+}
+
+@keyframes blink {
+    0%, 20% { color: transparent; }
+    40%, 100% { color: var(--icon-blue); }
+}

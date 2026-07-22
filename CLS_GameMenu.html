@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargo Logic Sim</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/LOGO_CLS.png">
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="assets/css/CLS_GameMenu.css">
+</head>
+<body>
+    <!-- =========================================
+     0. BOOT SCREEN (Fixes Audio Autoplay)
+     ========================================= -->
+    <div id="bootScreen" class="boot-overlay">
+        <button id="bootBtn" class="boot-btn interactable">INITIALIZE SYSTEM</button>
+    </div>
+
+    <!-- =========================================
+    1. LOADING SCREEN OVERLAY
+    ========================================= -->
+    <div id="loadingScreen" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <img src="assets/images/LOGO_CLS.png" alt="Cargo Logic Sim Logo" class="loading-logo" onerror="this.style.display='none';">
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+            <div class="loading-text">INITIALIZING LOGISTICS ENGINE<span class="dots">...</span></div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+     <audio id="startupSound" src="assets/sounds/startup.wav" preload="auto"></audio>
+    <audio id="hoverSound" src="assets/sounds/hover.wav" preload="auto"></audio>
+    <audio id="clickSound" src="assets/sounds/select.wav" preload="auto"></audio>
+    <audio id="notifySound" src="assets/sounds/notification.wav" preload="auto"></audio>
+
+    <div class="game-ui">
+        <!-- Top Right -->
+        <div class="top-right">
+            <div class="icon-btn interactable" id="newsBtn" title="System News">
+                <i class="fas fa-newspaper"></i>
+            </div>
+        </div>
+
+        <!-- Left Panel Container -->
+        <div class="left-panel">
+            <!-- LOGO: Added inline styles to make it larger -->
+            <img src="assets/images/LOGO_CLS.png" alt="Cargo Logic Sim Logo" class="game-logo interactable" style="max-height: 25vh; transform: scale(1.15); margin-bottom: 25px; transform-origin: left center;" onerror="this.style.display='none';">
+
+            <ul class="menu-list">
+                <li class="menu-item active interactable" data-i18n="newGame">
+                    <i class="fas fa-play"></i> New Game
+                </li>
+                <li class="menu-item interactable" data-i18n="continue">
+                    <i class="fas fa-save"></i> Continue
+                </li>
+                <li class="menu-item interactable" data-i18n="tycoon">
+                    <i class="fas fa-chart-line"></i> Tycoon
+                </li>
+                <li class="menu-item interactable" id="tutorialBtn" data-i18n="tutorial">
+                    <i class="fas fa-graduation-cap"></i> Tutorial
+                </li>
+                <li class="menu-item interactable" id="settingsBtn" data-i18n="settings">
+                    <i class="fas fa-cog"></i> Settings
+                </li>
+                <li class="menu-item interactable" id="creditsBtn" data-i18n="credits">
+                    <i class="fas fa-users"></i> Credits
+                </li>
+                <li class="menu-item exit interactable" data-i18n="exitGame">
+                    <i class="fas fa-power-off"></i> Exit Game
+                </li>
+            </ul>
+
+            <div class="bottom-left-icons">
+                <a href="#" class="social-icon interactable"><i class="fab fa-discord"></i></a>
+                <a href="#" class="social-icon interactable"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-icon interactable"><i class="fab fa-steam"></i></a>
+            </div>
+        </div>
+
+        <!-- Bottom Right Version -->
+        <div class="bottom-right-info">
+            <div class="status-dot"></div>
+            v0.1.0 - EARLY ACCESS
+        </div>
+    </div>
+
+    <!-- 1. NEWS MODAL -->
+    <div class="modal-overlay" id="newsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-bullhorn"></i> Latest Updates</h2>
+                <button class="close-btn interactable" data-target="newsModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content">
+                <p class="text-highlight"><strong>v0.1.0 Patch Notes</strong></p>
+                <p>Welcome to Cargo Logic Sim Early Access!</p>
+                <ul>
+                    <li>Added foundational UI elements.</li>
+                    <li>Integrated interactive news terminal.</li>
+                    <li>Preparing logistics engine for testing.</li>
+                    <li>SAaD Final Project!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. SETTINGS MODAL -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-cog"></i> System Settings</h2>
+                <button class="close-btn interactable" data-target="settingsModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="setting-group">
+                    <label>Master Volume</label>
+                    <div class="slider-container">
+                        <input type="range" id="masterVol" min="0" max="100" value="100" class="interactable">
+                        <span id="masterVolText">100%</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>SFX Volume</label>
+                    <div class="slider-container">
+                        <input type="range" id="sfxVol" min="0" max="100" value="80" class="interactable">
+                        <span id="sfxVolText">80%</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Language</label>
+                    <select id="langSelect" class="interactable">
+                        <option value="en">English</option>
+                        <option value="tl">Tagalog</option>
+                        <option value="de">German</option>
+                    </select>
+                </div>
+                <div class="setting-footer">
+                    <a href="#" class="interactable" id="termsBtn">Terms & Conditions</a> | 
+                    <a href="#" class="interactable" id="privacyBtn">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. CREDITS MODAL -->
+    <div class="modal-overlay" id="creditsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-users"></i> Credits</h2>
+                <button class="close-btn interactable" data-target="creditsModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content" style="text-align: center;">
+                <h3 class="text-highlight">Lead Developer</h3>
+                <p>Rayce Manuel E. Fillon</p>
+                <br>
+                <h3 class="text-highlight">Development Team</h3>
+                <p>Team Member 1<br>Team Member 2<br>Team Member 3</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. TERMS MODAL -->
+    <div class="modal-overlay" id="termsModal">
+        <div class="modal-box" style="width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-file-contract"></i> Terms & Conditions</h2>
+                <button class="close-btn interactable" data-target="termsModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; font-size: 20px;">
+                <p><em>Last Updated: July 22, 2026</em></p>
+                
+                <p class="text-highlight"><strong>1. Introduction</strong></p>
+                <p>Welcome to Cargo Logic Sim (“the Game”), developed by Rayce Manuel E. Fillon (“we,” “us,” or “our”). By downloading, accessing, or playing the Game, you agree to comply with and be bound by these Terms and Conditions. If you do not agree with these terms, please do not use the Game.</p>
+
+                <p class="text-highlight"><strong>2. Use of the Game</strong></p>
+                <p>The Game is provided for entertainment and educational purposes. You agree to use the Game only for lawful purposes and in accordance with these Terms. You must not:</p>
+                <ul>
+                    <li>Modify, reverse engineer, or attempt to extract the source code of the Game without permission.</li>
+                    <li>Exploit bugs, glitches, or vulnerabilities for unfair advantages.</li>
+                    <li>Use unauthorized third-party software or tools that affect gameplay.</li>
+                    <li>Distribute or copy the Game without authorization.</li>
+                </ul>
+
+                <p class="text-highlight"><strong>3. User Accounts and Progress</strong></p>
+                <p>If the Game provides account features:</p>
+                <ul>
+                    <li>You are responsible for maintaining the security of your account information.</li>
+                    <li>You are responsible for activities performed through your account.</li>
+                    <li>We may suspend accounts involved in cheating, abuse, or violations of these Terms.</li>
+                </ul>
+                <p>Game progress, achievements, and stored data may be affected by updates, technical issues, or maintenance.</p>
+
+                <p class="text-highlight"><strong>4. Game Content and Intellectual Property</strong></p>
+                <p>All content within the Game, including but not limited to Artwork, Characters, Game mechanics, Software code, Audio, Logos, and Designs are owned by or licensed to Rayce Manuel E. Fillon. You may not reproduce, sell, distribute, or use Game content without written permission.</p>
+
+                <p class="text-highlight"><strong>5. Updates and Changes</strong></p>
+                <p>We may update, modify, or remove features from the Game to improve performance, security, or user experience. We are not responsible for interruptions caused by maintenance, updates, or technical issues.</p>
+
+                <p class="text-highlight"><strong>6. User Feedback</strong></p>
+                <p>By submitting feedback, suggestions, or bug reports, you allow us to use that information to improve the Game without additional compensation.</p>
+
+                <p class="text-highlight"><strong>7. Disclaimer</strong></p>
+                <p>The Game is provided "as is" without guarantees that it will always be available, error-free, or compatible with all devices. We are not responsible for damages resulting from the use or inability to use the Game.</p>
+
+                <p class="text-highlight"><strong>8. Limitation of Liability</strong></p>
+                <p>To the maximum extent permitted by law, Rayce Manuel E. Fillon shall not be liable for losses, damages, or issues caused by the use of the Game.</p>
+
+                <p class="text-highlight"><strong>9. Termination</strong></p>
+                <p>We reserve the right to restrict access to the Game if users violate these Terms.</p>
+
+                <p class="text-highlight"><strong>10. Contact Information</strong></p>
+                <p>For questions regarding these Terms:<br>
+                Email: [Insert Email]<br>
+                Developer: Rayce Manuel E. Fillon</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. PRIVACY MODAL -->
+    <div class="modal-overlay" id="privacyModal">
+        <div class="modal-box" style="width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-user-secret"></i> Privacy Policy</h2>
+                <button class="close-btn interactable" data-target="privacyModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; font-size: 20px;">
+                <p><em>Last Updated: July 22, 2026</em></p>
+
+                <p class="text-highlight"><strong>1. Introduction</strong></p>
+                <p>This Privacy Policy explains how Rayce Manuel E. Fillon collects, uses, and protects information when you play Cargo Logic Sim. We respect your privacy and aim to collect only information necessary to provide and improve the Game.</p>
+
+                <p class="text-highlight"><strong>2. Information We Collect</strong></p>
+                <p>Depending on the features available, we may collect:</p>
+                <ul>
+                    <li><strong>Information You Provide:</strong> Username or nickname, Account information, Feedback and support messages.</li>
+                    <li><strong>Automatically Collected Information:</strong> Device information, Operating system version, Game performance data, Crash reports, Gameplay statistics.</li>
+                </ul>
+
+                <p class="text-highlight"><strong>3. How We Use Information</strong></p>
+                <p>Collected information may be used to Provide and maintain Game services, Save player progress, Improve gameplay experience, Fix bugs and technical issues, and Analyze game performance.</p>
+
+                <p class="text-highlight"><strong>4. Data Storage</strong></p>
+                <p>Game data may be stored locally on your device or through secure third-party services. We take reasonable measures to protect stored information from unauthorized access.</p>
+
+                <p class="text-highlight"><strong>5. Third-Party Services</strong></p>
+                <p>The Game may use third-party services such as Game engines, Cloud storage providers, Analytics tools, and Platform services. These services may collect information according to their own privacy policies.</p>
+
+                <p class="text-highlight"><strong>6. Children's Privacy</strong></p>
+                <p>The Game is not intended to knowingly collect personal information from children without appropriate consent. If you believe a child has provided personal information, please contact us so appropriate action can be taken.</p>
+
+                <p class="text-highlight"><strong>7. Data Sharing</strong></p>
+                <p>We do not sell your personal information. Information may only be shared when Required by law, Necessary to provide Game services, or Needed to protect user safety and security.</p>
+
+                <p class="text-highlight"><strong>8. Your Rights</strong></p>
+                <p>Depending on applicable laws, you may request Access to your data, Correction of inaccurate information, or Deletion of your information. Requests may be submitted through our contact information.</p>
+
+                <p class="text-highlight"><strong>9. Changes to This Privacy Policy</strong></p>
+                <p>We may update this Privacy Policy from time to time. Changes will become effective when posted within the Game or related platforms.</p>
+
+                <p class="text-highlight"><strong>10. Contact Information</strong></p>
+                <p>For privacy concerns:<br>
+                Email: [Insert Email]<br>
+                Developer: Rayce Manuel E. Fillon</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="assets/js/CLS_GameMenu.js"></script>
+</body>
+</html>
