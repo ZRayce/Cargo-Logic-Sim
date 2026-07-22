@@ -223,21 +223,29 @@ document.querySelectorAll('.lesson-card').forEach(card => {
 });
 
 // Code Parser & Loop Unroller
+// NEW PARSER: Handles comments properly before unrolling loops!
 function parseCode(rawCode) {
-    // Strip whitespace and comments
-    let code = rawCode.toLowerCase().replace(/\s+/g, '').replace(/\/\/[^;]*/g, '');
+    // 1. Strip out all // comments FIRST so they don't eat the actual code
+    let code = rawCode.replace(/\/\/.*$/gm, '');
     
-    // Support basic variables: let x=5; 
-    const varMatch = code.match(/let[a-z]+=(\d+);?/);
+    // 2. Now strip whitespace and convert to lowercase for easy matching
+    code = code.toLowerCase().replace(/\s+/g, '');
+    
+    // 3. Store variables: let steps=4;
+    const varMatch = code.match(/let([a-z]+)=(\d+);?/);
+    let varName = "", varValue = 0;
     if (varMatch) {
-        const val = varMatch[1];
-        // Replace repeat(x) with the number stored in variable
-        code = code.replace(/repeat\([a-z]+\)/g, `repeat(${val})`);
+        varName = varMatch[1];
+        varValue = parseInt(varMatch[2]);
     }
 
-    // Unroll loops
-    let loopRegex = /repeat\((\d+)\)\{([^}]+)\}/g;
-    code = code.replace(loopRegex, (match, count, body) => (body + ';').repeat(parseInt(count)));
+    // 4. Unroll standard JS loops: for(let i=0; i<5; i++){...} 
+    let loopRegex = /for\(let([a-z]+)=(\d+);\1<([a-z0-9]+);\1\+\+\)\{([^}]+)\}/g;
+    code = code.replace(loopRegex, (match, iter, start, limit, body) => {
+        let max = isNaN(limit) ? (limit === varName ? varValue : 0) : parseInt(limit);
+        let count = Math.max(0, max - parseInt(start));
+        return (body + ';').repeat(count);
+    });
     
     return code.split(/[\n;]/).filter(c => c.length > 0);
 }
@@ -377,6 +385,16 @@ if (nextLessonBtn) {
         if (currentActiveLesson < 5) {
             const nextCard = document.querySelector(`[data-lesson="${currentActiveLesson + 1}"]`);
             if (nextCard) nextCard.click();
+        }
+    });
+}
+
+// Press Shift + Enter inside the code box to run the simulation
+if (playerCodeInput) {
+    playerCodeInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.shiftKey) {
+            e.preventDefault(); // Stops it from making a new line
+            executeInterpreter();
         }
     });
 }

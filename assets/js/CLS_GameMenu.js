@@ -1,7 +1,8 @@
 // =========================================
-// 0. BOOT & LOADING SCREEN BYPASS CHECK
+// 0. BOOT & LOADING SCREEN INITIALIZATION
 // =========================================
 
+// Check if we should skip the boot sequence (e.g., coming back from tutorial)
 window.addEventListener('load', () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('skipLoad') === 'true') {
@@ -20,10 +21,12 @@ const startupAudio = document.getElementById('startupSound');
 if (bootBtn) {
     bootBtn.addEventListener('click', () => {
         // 1. Fade out and remove the Boot Screen
-        bootScreen.style.opacity = '0';
-        setTimeout(() => {
-            bootScreen.style.display = 'none';
-        }, 300);
+        if (bootScreen) {
+            bootScreen.style.opacity = '0';
+            setTimeout(() => {
+                bootScreen.style.display = 'none';
+            }, 300);
+        }
 
         // 2. Show the Loading Screen to trigger CSS animations
         if (loadingScreen) {
@@ -159,11 +162,17 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     });
 });
 
-// --- TUTORIAL NAVIGATION ---
+// =========================================
+// 3. TUTORIAL NAVIGATION
+// =========================================
 const tutorialBtn = document.getElementById('tutorialBtn');
 if (tutorialBtn) {
-    tutorialBtn.addEventListener('click', () => {
-        window.location.href = 'CLS_Tutorial.html';
+    tutorialBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        playSound(clickAudio);
+        setTimeout(() => {
+            window.location.href = 'CLS_Tutorial.html';
+        }, 200);
     });
 }
 
