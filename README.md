@@ -74,8 +74,9 @@ git clone [https://github.com/ZRayce/Cargo-Logic-Sim.git](https://github.com/ZRa
 └── CLS_Tutorial.html           # The interactive IDE and simulation workspace
 ```
 # 👨‍💻 Development TeamThis project was built as an academic capstone/final project showcasing front-end architecture, custom parsing logic, and interactive UI/UX design.
-
+```
 Rayce Manuel E. Fillon – Lead Developer / Researcher
 Rheniel Khen Tambal – Developer
 Ryne Abel Tajena – Co-researchers
 Mark Gabriel Perez – Co-researchers
+```
