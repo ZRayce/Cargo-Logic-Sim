@@ -19,17 +19,23 @@
     <audio id="hoverSound" src="assets/sounds/hover.wav" preload="auto"></audio>
     <audio id="clickSound" src="assets/sounds/select.wav" preload="auto"></audio>
     <audio id="notifySound" src="assets/sounds/notification.wav" preload="auto"></audio>
-    <audio id="successSound" src="assets/sounds/successful.wav" preload="auto"></audio>
+    <audio id="successSound" src="assets/sounds/levelcomplete.wav" preload="auto"></audio>
     <audio id="errorSound" src="assets/sounds/error.wav" preload="auto"></audio>
 
     <div class="game-ui">
-        <!-- Top Navigation Bar -->
+       <!-- Top Navigation Bar -->
         <div class="top-nav">
             <a href="CLS_GameMenu.html?skipLoad=true" class="icon-btn interactable" id="backMenuBtn" title="Back to Menu">
                 <i class="fas fa-arrow-left"></i>
             </a>
             <div class="tutorial-title-bar">
                 <i class="fas fa-book-open"></i> TUTORIAL
+            </div>
+            <!-- Cheat Sheet Button -->
+            <div class="top-right-group">
+                <div class="icon-btn interactable" id="cheatSheetBtn" title="Command Cheat Sheet">
+                    <i class="fas fa-terminal"></i>
+                </div>
             </div>
         </div>
 
@@ -42,7 +48,7 @@
                     <div class="lesson-icon"><i class="fas fa-arrows-alt"></i></div>
                     <div class="lesson-info">
                         <span class="lesson-num">01 MOVEMENT</span>
-                        <p>Learn how to move your bot around.</p>
+                        <p>Navigate the 2D grid.</p>
                     </div>
                 </div>
 
@@ -50,7 +56,7 @@
                     <div class="lesson-icon"><i class="fas fa-cube"></i></div>
                     <div class="lesson-info">
                         <span class="lesson-num">02 PICKUP & DROP</span>
-                        <p>Pick up crates and drop them.</p>
+                        <p>Transport a crate to target.</p>
                     </div>
                     <div class="lock-icon"><i class="fas fa-lock"></i></div>
                 </div>
@@ -58,8 +64,8 @@
                 <div class="lesson-card locked interactable" data-lesson="3">
                     <div class="lesson-icon"><i class="fas fa-code-branch"></i></div>
                     <div class="lesson-info">
-                        <span class="lesson-num">03 CONDITIONS</span>
-                        <p>Use if/else to make decisions.</p>
+                        <span class="lesson-num">03 PATHFINDING</span>
+                        <p>Avoid obstacles to deliver.</p>
                     </div>
                     <div class="lock-icon"><i class="fas fa-lock"></i></div>
                 </div>
@@ -68,7 +74,7 @@
                     <div class="lesson-icon"><i class="fas fa-redo"></i></div>
                     <div class="lesson-info">
                         <span class="lesson-num">04 LOOPS</span>
-                        <p>Repeat commands efficiently.</p>
+                        <p>Use repeat() for efficiency.</p>
                     </div>
                     <div class="lock-icon"><i class="fas fa-lock"></i></div>
                 </div>
@@ -77,16 +83,7 @@
                     <div class="lesson-icon"><i class="fas fa-calculator"></i></div>
                     <div class="lesson-info">
                         <span class="lesson-num">05 VARIABLES</span>
-                        <p>Store and use data with variables.</p>
-                    </div>
-                    <div class="lock-icon"><i class="fas fa-lock"></i></div>
-                </div>
-
-                <div class="lesson-card locked interactable" data-lesson="6">
-                    <div class="lesson-icon"><i class="fas fa-file-code"></i></div>
-                    <div class="lesson-info">
-                        <span class="lesson-num">06 FUNCTIONS</span>
-                        <p>Create reusable functions.</p>
+                        <p>Store and use data.</p>
                     </div>
                     <div class="lock-icon"><i class="fas fa-lock"></i></div>
                 </div>
@@ -98,25 +95,29 @@
                 <!-- Lesson Header Info -->
                 <div class="lesson-header">
                     <h2 id="lessonTitle">LESSON 1: MOVEMENT</h2>
-                    <p id="lessonDesc">Use the move() command to move your bot.</p>
+                    <p id="lessonDesc">Use the move() command to navigate the grid.</p>
                 </div>
 
-                <!-- Simulation Visual Screen -->
+                <!-- 2D Simulation Visual Screen -->
                 <div class="sim-screen">
                     <div class="grid-overlay"></div>
-                    <!-- Simulated Game Grid Elements -->
-                    <div class="sim-bot"><i class="fas fa-robot"></i><div class="bot-antenna"></div></div>
-                    <div class="sim-crate"><i class="fas fa-box"></i></div>
-                    <div class="sim-target-zone"></div>
-                    <div class="sim-door"></div>
-                    <div class="sim-conveyor"></div>
+                    
+                    <!-- Dynamic Factory Elements -->
+                    <div id="obstaclesContainer"></div> <!-- Obstacles spawn here -->
+                    <div class="sim-target-zone" id="simTarget"></div>
+                    <div class="sim-crate" id="simCrate"><i class="fas fa-box"></i></div>
+                    <div class="sim-bot" id="simBot"><i class="fas fa-robot"></i><div class="bot-antenna"></div></div>
                 </div>
 
                 <!-- Bottom Split Panel (Code Input & Objectives) -->
                 <div class="lesson-bottom-split">
                     <div class="panel-box code-panel">
                         <span class="box-label">WRITE CODE:</span>
-                        <textarea class="code-input" id="playerCodeInput" placeholder="Type commands here..."></textarea>
+                        <textarea class="code-input" id="playerCodeInput" spellcheck="false" placeholder="Type commands here..."></textarea>
+                        <!-- Live Execution Banner -->
+                        <div id="executionDisplay" class="execution-display" style="display: none;">
+                            <i class="fas fa-cog fa-spin"></i> RUNNING: <span id="currentCommand" style="color: #38bdf8;"></span>
+                        </div>
                     </div>
 
                     <div class="panel-box objective-panel">
@@ -128,9 +129,7 @@
                         <button class="start-btn interactable" id="startLessonBtn">START LESSON</button>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 
@@ -155,13 +154,13 @@
                 <button class="close-btn interactable" data-target="errorModal"><i class="fas fa-times-circle"></i></button>
             </div>
             <div class="modal-content">
-                <p id="errorMessage" style="color: #fca5a5; font-size: 20px; margin-bottom: 10px;">Incorrect command sequence detected.</p>
-                <p style="font-size: 17px; color: #94a3b8;">Review the objective and check your syntax before running again.</p>
+                <p id="errorMessage" style="color: #fca5a5; font-size: 20px; margin-bottom: 10px;">Incorrect command sequence.</p>
+                <p style="font-size: 17px; color: #94a3b8;">Review your syntax and logic before running again.</p>
             </div>
         </div>
     </div>
 
-    <!-- SUCCESS MODAL WITH CONFETTI -->
+    <!-- SUCCESS MODAL WITH STARS & CONFETTI -->
     <div class="modal-overlay" id="successModal">
         <div class="confetti-container" id="confettiContainer"></div>
         <div class="modal-box success-box" style="width: 450px; text-align: center; z-index: 101;">
@@ -170,9 +169,36 @@
                 <button class="close-btn interactable" data-target="successModal"><i class="fas fa-times-circle"></i></button>
             </div>
             <div class="modal-content">
-                <p class="text-highlight" style="font-size: 24px; color: #10b981; margin-bottom: 10px;">EXECUTION SUCCESSFUL!</p>
-                <p>Your logic script compiled and executed with zero errors. Next module unlocked!</p>
-                <button class="start-btn interactable" id="nextLessonBtn" style="position: static; margin-top: 20px; width: 100%;">PROCEED</button>
+                <!-- Efficiency Star Rating -->
+                <div class="star-rating" style="margin-bottom: 15px;">
+                    <i class="fas fa-star" id="star1"></i>
+                    <i class="fas fa-star" id="star2"></i>
+                    <i class="fas fa-star" id="star3"></i>
+                </div>
+                <p class="text-highlight" style="font-size: 24px; color: #10b981; margin-bottom: 5px;">EXECUTION SUCCESSFUL!</p>
+                <p id="efficiencyMsg" style="font-size: 18px; color: #94a3b8; margin-bottom: 15px;">Code efficiency rating calculated.</p>
+                
+                <button class="start-btn interactable" id="nextLessonBtn" style="position: static; margin-top: 10px; width: 100%;">PROCEED</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHEAT SHEET MODAL -->
+    <div class="modal-overlay" id="cheatSheetModal">
+        <div class="modal-box" style="width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title" style="color: #38bdf8;"><i class="fas fa-terminal"></i> COMMAND CHEAT SHEET</h2>
+                <button class="close-btn interactable" data-target="cheatSheetModal"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="modal-content" style="text-align: left; padding: 0;">
+                <table class="cheat-table">
+                    <tr><th>Command</th><th>Description</th></tr>
+                    <tr><td><code>move(N|S|E|W)</code></td><td>Moves bot 1 tile (North, South, East, West).</td></tr>
+                    <tr><td><code>pickup()</code></td><td>Picks up an item from current tile.</td></tr>
+                    <tr><td><code>drop()</code></td><td>Drops the held item.</td></tr>
+                    <tr><td><code>repeat(x){...}</code></td><td>Repeats commands inside brackets x times.</td></tr>
+                    <tr><td><code>let x = 5;</code></td><td>Creates a variable named x holding a number.</td></tr>
+                </table>
             </div>
         </div>
     </div>
